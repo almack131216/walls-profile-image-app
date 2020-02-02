@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import Message from "../Message/Message";
 import ImagePreview from "./ImagePreview";
 
 const FileUpload = () => {
+  const fileInput = useRef(null);
+  const fileSubmit = useRef(null);
   const [file, setFile] = useState();
   const [filename, setFilename] = useState("Choose file");
   const [uploadedFile, setUploadedFile] = useState({});
@@ -13,6 +15,10 @@ const FileUpload = () => {
   const onChange = e => {
     setFile(e.target.files[0]);
     setFilename(e.target.files[0].name);
+    console.log("onChange...", e.target.files[0].name);
+    // myForm.current.submit();
+    onSubmit(e.target.files[0]);
+    // fileSubmit.current.click(e);
   };
 
   const updateProfileImage = () => {
@@ -20,13 +26,14 @@ const FileUpload = () => {
   };
 
   const onSubmit = async e => {
-    e.preventDefault();
+    // e.preventDefault();
+    const newFile = file ? file : e;
     const formData = new FormData();
-
-    formData.append("image", file);
-    formData.append("name", file.name);
-    // console.log("file?", file);
-    // console.log("file name?", file.name);
+    console.log("file?", e, newFile);
+    formData.append("image", newFile);
+    formData.append("name", newFile.name);
+    // console.log("file?", newFile);
+    // console.log("file name?", newFile.name);
     console.log("ENDPOINT:", process.env.REACT_APP_API_ENDPOINT);
     try {
       const res = await axios.post(
@@ -59,6 +66,8 @@ const FileUpload = () => {
     }
   };
 
+  const triggerInputFile = () => fileInput.current.click();
+
   return (
     <div className="container">
       <div className="row mt-5">
@@ -72,14 +81,28 @@ const FileUpload = () => {
             alt={uploadedFile.filename}
           />
 
-          <Form onSubmit={onSubmit}>
-            <input type="file" onChange={onChange} accept="image/*" />
-            <input type="submit" />
+          <Form>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              onChange={e => onChange(e)}
+              ref={fileInput}
+              accept="image/*"
+            />
+
             {uploadedFile.filename ? (
               <Button onClick={updateProfileImage}>
                 Make this my profile picture
               </Button>
-            ) : null}
+            ) : (
+              <Button
+                onClick={() => {
+                  triggerInputFile();
+                }}
+              >
+                Select a photo
+              </Button>
+            )}
           </Form>
         </div>
       </div>
