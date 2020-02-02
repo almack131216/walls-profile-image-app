@@ -5,7 +5,7 @@ import ProfileImage from "./ProfileImage";
 
 const Header = () => {
   return (
-    <Navbar>
+    <Navbar className="justify-content-between">
       <Navbar.Brand href="/">
         <img src={logo} className="logo" alt="logo" />
         <span className="logo-text">
