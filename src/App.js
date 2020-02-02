@@ -1,17 +1,13 @@
 import React from "react";
-import logo from "./logo.svg";
+import Header from "./components/Header/Header";
+import FileUpload from "./components/FileUpload/FileUpload";
+import "./tmp.css";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="logo" alt="logo" />
-        <a className="logo" href="/">
-          <span className="logo-text">
-            Walls<span>.io</span>
-          </span>
-        </a>
-      </header>
+      <Header />
+      <FileUpload />
     </div>
   );
 }
