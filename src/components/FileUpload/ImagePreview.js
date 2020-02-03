@@ -3,15 +3,17 @@ import Img from "react-image";
 import ImageNotFound from "../../assets/image-placeholder.jpg";
 
 const ImagePreview = props => {
-  console.log("[ImagePreview] ...");
-  // const imgUrl = "https://via.placeholder.com/640x480";
+  //   console.log("[ImagePreview] ...");
   const imgUrl = props.src ? props.src : "";
-  console.log("[ImagePreview] ...");
-  const imgAlt = props.alt ? props.alt : "Select a photo";
+  const imgAlt = props.alt ? props.alt : "";
 
   const imgPrimary = <Img src={[imgUrl, ImageNotFound]} alt={imgAlt} />;
 
-  return <div className="img-peview-wrap">{imgPrimary}</div>;
+  return (
+    <div className="img-peview-wrap">
+      <div>{imgPrimary}</div>
+    </div>
+  );
 };
 
 export default ImagePreview;

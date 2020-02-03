@@ -71,7 +71,7 @@ const FileUpload = () => {
   return (
     <div className="container">
       <div className="row mt-5">
-        <div className="col-md-6 m-auto">
+        <div className="file-input-wrap col-sm-8 col-md-6 m-auto">
           {message.msg ? (
             <Message msg={message.msg} variant={message.variant} />
           ) : null}
@@ -90,19 +90,21 @@ const FileUpload = () => {
               accept="image/*"
             />
 
-            {uploadedFile.filename ? (
-              <Button onClick={updateProfileImage}>
-                Make this my profile picture
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  triggerInputFile();
-                }}
-              >
-                Select a photo
-              </Button>
-            )}
+            <div className="btns mt-2">
+              {uploadedFile.filename ? (
+                <Button onClick={updateProfileImage}>
+                  Make this my profile picture
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    triggerInputFile();
+                  }}
+                >
+                  Select a photo
+                </Button>
+              )}
+            </div>
           </Form>
         </div>
       </div>
