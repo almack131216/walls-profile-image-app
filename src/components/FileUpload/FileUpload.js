@@ -24,6 +24,7 @@ const FileUpload = props => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState();
   const [message, setMessage] = useState({}); // ui feedback
   const [uploadPercentage, setUploadPercentage] = useState(0); // bootstrap percentage progress bar
+  const [imageFailedToUpload, setImageFailedToUpload] = useState(null);
   /* (END) [0] init */
 
   /* [1] Select file */
@@ -32,6 +33,7 @@ const FileUpload = props => {
     ConsoleLog(
       "[FileUpload] [1] triggerInputFile() > pseudo button triggers file input"
     );
+    setMessage({ msg: "" });
     fileInput.current.click();
   };
   /* (END) pseudo button */
@@ -56,6 +58,7 @@ const FileUpload = props => {
   const onSubmit = async e => {
     e.preventDefault();
     setUserStep(2);
+    setMessage({ msg: "" });
     ConsoleLog("[FileUpload] [2] onSubmit() ...");
 
     let formData = new FormData();
@@ -103,6 +106,7 @@ const FileUpload = props => {
     } catch (err) {
       ConsoleLog("[FileUpload] [2] axios.post() ... catch err");
       setDocumentTitle("");
+      setImageFailedToUpload(true);
 
       if (err.response) {
         if (err.response.status === 500) {
@@ -154,6 +158,24 @@ const FileUpload = props => {
   const btnUploadPhoto = (
     <Button onClick={onSubmit}>Make this my profile picture</Button>
   );
+
+  let btnSwitched = null;
+  switch (userStep) {
+    case 1:
+      btnSwitched = btnUploadPhoto;
+      break;
+    case 2:
+      btnSwitched =
+        imageFailedToUpload === true
+          ? btnSelectPhoto("replace")
+          : "Uploading...";
+      break;
+    case 3:
+      btnSwitched = btnSelectPhoto("replace");
+      break;
+    default:
+      btnSwitched = btnSelectPhoto("select");
+  }
   /* (END) btns */
 
   return (
@@ -177,13 +199,7 @@ const FileUpload = props => {
               accept="image/*"
             />
 
-            <div className="btns mt-2">
-              {imagePreviewUrl
-                ? userStep === 3
-                  ? btnSelectPhoto("replace")
-                  : btnUploadPhoto
-                : btnSelectPhoto("select")}
-            </div>
+            <div className="btns mt-2">{btnSwitched}</div>
           </Form>
         </div>
       </div>
