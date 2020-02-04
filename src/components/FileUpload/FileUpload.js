@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import Message from "../Message/Message";
 import ImagePreview from "../ImagePreview/ImagePreview";
+import Progress from "../Progress/Progress";
 import "./FileUpload.css";
 import { ConsoleLog } from "../../assets/Helpers";
 
@@ -22,6 +23,7 @@ const FileUpload = props => {
   const [selectedFile, setSelectedFile] = useState();
   const [imagePreviewUrl, setImagePreviewUrl] = useState();
   const [message, setMessage] = useState({}); // ui feedback
+  const [uploadPercentage, setUploadPercentage] = useState(0); // bootstrap percentage progress bar
   /* (END) [0] init */
 
   /* [1] Select file */
@@ -67,20 +69,28 @@ const FileUpload = props => {
     ConsoleLog("[FileUpload] [2] onSubmit() > selectedFile: " + selectedFile);
     ConsoleLog("[FileUpload] [2] onSubmit() > formData: " + formData);
 
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "image/*",
-        Authorization: `Client-ID ${process.env.REACT_APP_API_CLIENT_ID}`
-      }
-    };
-
     try {
       ConsoleLog("[FileUpload] [2] axios.post() ...");
       const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}`,
         formData,
-        config
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "image/*",
+            Authorization: `Client-ID ${process.env.REACT_APP_API_CLIENT_ID}`
+          },
+          onUploadProgress: progressEvent => {
+            setUploadPercentage(
+              parseInt(
+                Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              )
+            );
+
+            // Clear percentage
+            setTimeout(() => setUploadPercentage(0), 5000);
+          }
+        }
       );
 
       const { link } = res.data.data;
@@ -140,6 +150,8 @@ const FileUpload = props => {
           {message.msg ? (
             <Message msg={message.msg} variant={message.variant} />
           ) : null}
+
+          {uploadPercentage ? <Progress percentage={uploadPercentage} /> : null}
 
           <ImagePreview src={imagePreviewUrl} alt={""} />
 

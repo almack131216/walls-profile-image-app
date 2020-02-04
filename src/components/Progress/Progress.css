@@ -1,0 +1,8 @@
+/* Progress.css */
+
+.progress {
+  border-radius: 0px !important;
+}
+.progress-bar {
+  background-color: #f3b200 !important;
+}
