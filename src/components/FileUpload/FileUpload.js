@@ -117,6 +117,22 @@ const FileUpload = props => {
   };
   /* (END) [3] update profile image */
 
+  /* btns */
+  const btnSelectPhoto = type => (
+    <Button
+      onClick={() => {
+        triggerInputFile();
+      }}
+    >
+      {type === "replace" ? "Replace photo" : "Select a photo"}
+    </Button>
+  );
+
+  const btnUploadPhoto = (
+    <Button onClick={onSubmit}>Make this my profile picture</Button>
+  );
+  /* (END) btns */
+
   return (
     <div className="container">
       <div className="row mt-5 mb-5">
@@ -137,29 +153,11 @@ const FileUpload = props => {
             />
 
             <div className="btns mt-2">
-              {imagePreviewUrl ? (
-                userStep === 3 ? (
-                  <Button
-                    onClick={() => {
-                      triggerInputFile();
-                    }}
-                  >
-                    Replace photo
-                  </Button>
-                ) : (
-                  <Button onClick={onSubmit}>
-                    Make this my profile picture
-                  </Button>
-                )
-              ) : (
-                <Button
-                  onClick={() => {
-                    triggerInputFile();
-                  }}
-                >
-                  Select a photo
-                </Button>
-              )}
+              {imagePreviewUrl
+                ? userStep === 3
+                  ? btnSelectPhoto("replace")
+                  : btnUploadPhoto
+                : btnSelectPhoto("select")}
             </div>
           </Form>
         </div>
