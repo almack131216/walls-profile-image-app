@@ -1,6 +1,7 @@
 import React from "react";
 import Alert from "react-bootstrap/Alert";
 import PropTypes from "prop-types";
+import "./Message.css";
 
 const Message = ({ msg, title, variant }) => {
   return (

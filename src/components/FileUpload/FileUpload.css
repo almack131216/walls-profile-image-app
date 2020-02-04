@@ -15,4 +15,22 @@
 
 .btns > button {
   width: 100%;
+  border: 2px solid #00222d !important;
+  background-color: #fff !important;
+  color: #00222d !important;
+  font-weight: bold;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.btns > button:hover {
+  background-color: #00222d !important;
+  border-color: #00222d !important;
+  color: #fff !important;
+}
+
+.btns > button:active {
+  border-color: black !important;
+  background-color: #f3b200 !important;
+  color: black !important;
 }

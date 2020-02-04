@@ -5,7 +5,7 @@ import Message from "../Message/Message";
 import ImagePreview from "../ImagePreview/ImagePreview";
 import Progress from "../Progress/Progress";
 import "./FileUpload.css";
-import { ConsoleLog } from "../../assets/Helpers";
+import { ConsoleLog, setDocumentTitle } from "../../assets/Helpers";
 
 /*
  * User Steps
@@ -71,6 +71,8 @@ const FileUpload = props => {
 
     try {
       ConsoleLog("[FileUpload] [2] axios.post() ...");
+      setDocumentTitle("Uploading image...");
+
       const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}`,
         formData,
@@ -93,22 +95,33 @@ const FileUpload = props => {
         }
       );
 
+      setDocumentTitle("");
       const { link } = res.data.data;
       setImagePreviewUrl(link);
       updateProfileImage(); //save to localStorage... [3]
       // setMessage({ msg: "File Uploaded", variant: "success" });
     } catch (err) {
       ConsoleLog("[FileUpload] [2] axios.post() ... catch err");
+      setDocumentTitle("");
+
       if (err.response) {
         if (err.response.status === 500) {
+          ConsoleLog("[FileUpload] [2] axios.post() ... catch err ... 500");
           setMessage({
-            msg: "There was a problem with the server",
+            msg: "There was a problem with the server. Error 500",
             variant: "danger"
           });
         } else {
-          setMessage({ msg: err.response.data.msg, variant: "danger" });
+          ConsoleLog(
+            "[FileUpload] [2] axios.post() ... catch err ... " +
+              err.response.data.data.error
+          );
+          setMessage({ msg: err.response.data.data.error, variant: "danger" });
         }
       } else {
+        ConsoleLog(
+          "[FileUpload] [2] axios.post() ... catch err ... Network Error"
+        );
         setMessage({ msg: "Network Error", variant: "danger" });
       }
     }

@@ -3,11 +3,12 @@ import Header from "./components/Header/Header";
 import FileUpload from "./components/FileUpload/FileUpload";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ConsoleLog } from "./assets/Helpers";
+import { ConsoleLog, setDocumentTitle } from "./assets/Helpers";
 
 class App extends Component {
   constructor() {
     ConsoleLog("[App]");
+    setDocumentTitle(process.env.REACT_APP_BRAND + " | App Task");
     super();
     this.state = {
       imgSrc: localStorage.getItem("imgSrc")
