@@ -6,61 +6,66 @@ import ImagePreview from "../ImagePreview/ImagePreview";
 import "./FileUpload.css";
 import { ConsoleLog } from "../../assets/Helpers";
 
+/*
+ * User Steps
+ * [0] init
+ * [1] Select file (using pseudo button to trigger [hidden] file input)
+ * [2] Upload file (upload to imgur, then update local states and save to localStorage[3])
+ * [3] update profile image (save to localStorage)
+ */
+
 const FileUpload = props => {
-  const [userStep, setUserStep] = useState(0);
-  const fileInput = useRef(null);
+  /* [0] init */
+  ConsoleLog("[FileUpload]");
+  const [userStep, setUserStep] = useState(0); // useful for tracking
+  const fileInput = useRef(null); // need this for hidden input field, triggered by pseudo button
   const [selectedFile, setSelectedFile] = useState();
   const [imagePreviewUrl, setImagePreviewUrl] = useState();
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState({}); // ui feedback
+  /* (END) [0] init */
 
+  /* [1] Select file */
+  /* pseudo button triggers file input */
   const triggerInputFile = () => {
     ConsoleLog(
-      "[FileUpload] triggerInputFile() > pseudo button triggers file input"
+      "[FileUpload] [1] triggerInputFile() > pseudo button triggers file input"
     );
     fileInput.current.click();
   };
-
+  /* (END) pseudo button */
+  /* file input changed */
   const fileChangedHandler = e => {
-    ConsoleLog(
-      "[FileUpload] fileChangedHandler() > generate image before upload"
-    );
     setUserStep(1);
     setSelectedFile(e.target.files[0]);
+    ConsoleLog(
+      "[FileUpload] [1] fileChangedHandler() > generate image before upload"
+    );
 
     let reader = new FileReader();
-
     reader.onloadend = () => {
       setImagePreviewUrl(reader.result);
     };
-
     reader.readAsDataURL(e.target.files[0]);
   };
+  /* (END) file input changed */
+  /* (END) [1] Select file */
 
-  const updateProfileImage = () => {
-    setUserStep(3);
-    ConsoleLog(
-      "[FileUpload] updateProfileImage() > SAVE to localStorage: ",
-      imagePreviewUrl
-    );
-    localStorage.setItem("imgSrc", imagePreviewUrl);
-    props.setImgSrc();
-  };
-
+  /* [2] Upload file */
   const onSubmit = async e => {
     e.preventDefault();
-    ConsoleLog("[FileUpload] onSubmit() ...");
     setUserStep(2);
+    ConsoleLog("[FileUpload] [2] onSubmit() ...");
 
     let formData = new FormData();
     formData.append("image", selectedFile);
     formData.append("name", selectedFile.name);
     formData.append("title", selectedFile.name);
     ConsoleLog(
-      "[FileUpload] onSubmit() > ENDPOINT:",
-      process.env.REACT_APP_API_ENDPOINT
+      "[FileUpload] [2] onSubmit() > ENDPOINT: " +
+        process.env.REACT_APP_API_ENDPOINT
     );
-    ConsoleLog("[FileUpload] onSubmit() > selectedFile: ", selectedFile);
-    ConsoleLog("[FileUpload] onSubmit() > formData: ", formData);
+    ConsoleLog("[FileUpload] [2] onSubmit() > selectedFile: " + selectedFile);
+    ConsoleLog("[FileUpload] [2] onSubmit() > formData: " + formData);
 
     const config = {
       headers: {
@@ -71,6 +76,7 @@ const FileUpload = props => {
     };
 
     try {
+      ConsoleLog("[FileUpload] [2] axios.post() ...");
       const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}`,
         formData,
@@ -79,9 +85,10 @@ const FileUpload = props => {
 
       const { link } = res.data.data;
       setImagePreviewUrl(link);
-      updateProfileImage();
+      updateProfileImage(); //save to localStorage... [3]
       // setMessage({ msg: "File Uploaded", variant: "success" });
     } catch (err) {
+      ConsoleLog("[FileUpload] [2] axios.post() ... catch err");
       if (err.response) {
         if (err.response.status === 500) {
           setMessage({
@@ -96,6 +103,19 @@ const FileUpload = props => {
       }
     }
   };
+  /* (END) [2] Upload file */
+
+  /* [3] update profile image */
+  const updateProfileImage = () => {
+    setUserStep(3);
+    ConsoleLog(
+      "[FileUpload] [3] updateProfileImage() > SAVE to localStorage: " +
+        imagePreviewUrl
+    );
+    localStorage.setItem("imgSrc", imagePreviewUrl);
+    props.setImgSrc();
+  };
+  /* (END) [3] update profile image */
 
   return (
     <div className="container">

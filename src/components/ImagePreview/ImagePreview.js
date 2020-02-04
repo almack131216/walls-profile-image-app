@@ -7,6 +7,7 @@ const ImagePreview = props => {
   const imgUrl = props.src ? props.src : "";
   const imgAlt = props.alt ? props.alt : "";
 
+  // <Img /> tag accepts src array, using ImageNotFound as a fallback / default
   const imgPrimary = <Img src={[imgUrl, ImageNotFound]} alt={imgAlt} />;
 
   return (

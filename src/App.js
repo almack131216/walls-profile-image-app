@@ -7,6 +7,7 @@ import { ConsoleLog } from "./assets/Helpers";
 
 class App extends Component {
   constructor() {
+    ConsoleLog("[App]");
     super();
     this.state = {
       imgSrc: localStorage.getItem("imgSrc")
@@ -18,7 +19,7 @@ class App extends Component {
   // then... <Header imgSrc /> can show new state
   setImgSrc = () => {
     this.setState({ imgSrc: localStorage.getItem("imgSrc") });
-    ConsoleLog("[App] setImgSrc()...", this.state.imgSrc);
+    ConsoleLog("[App] setImgSrc()..." + this.state.imgSrc);
   };
 
   render() {
