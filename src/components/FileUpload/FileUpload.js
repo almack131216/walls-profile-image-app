@@ -4,51 +4,71 @@ import axios from "axios";
 import Message from "../Message/Message";
 import ImagePreview from "./ImagePreview";
 
-const FileUpload = () => {
+const FileUpload = props => {
+  const [userStep, setUserStep] = useState(0);
   const fileInput = useRef(null);
-  const fileSubmit = useRef(null);
-  const [file, setFile] = useState();
+  const [selectedFile, setSelectedFile] = useState();
+  const [imagePreviewUrl, setImagePreviewUrl] = useState();
   const [filename, setFilename] = useState("Choose file");
-  const [uploadedFile, setUploadedFile] = useState({});
   const [message, setMessage] = useState({});
 
-  const onChange = e => {
-    setFile(e.target.files[0]);
+  const triggerInputFile = () => fileInput.current.click();
+
+  const fileChangedHandler = e => {
+    setUserStep(1);
     setFilename(e.target.files[0].name);
-    console.log("onChange...", e.target.files[0].name);
-    // myForm.current.submit();
-    onSubmit(e.target.files[0]);
-    // fileSubmit.current.click(e);
+    setSelectedFile(e.target.files[0]);
+
+    let reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImagePreviewUrl(reader.result);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   const updateProfileImage = () => {
-    console.log("Update profile image in navbar...");
+    setUserStep(3);
+    console.log("[FileUpload] updateProfileImage()...");
+    // console.log("[FileUpload] updateProfileImage() > SAVE to localStorage: ", imagePreviewUrl);
+    localStorage.setItem("imgSrc", imagePreviewUrl);
+    props.setImgSrc();
   };
 
   const onSubmit = async e => {
-    // e.preventDefault();
-    const newFile = file ? file : e;
-    const formData = new FormData();
-    console.log("file?", e, newFile);
+    e.preventDefault();
+    setUserStep(2);
+
+    const newFile = selectedFile;
+
+    let formData = new FormData();
     formData.append("image", newFile);
     formData.append("name", newFile.name);
-    // console.log("file?", newFile);
-    // console.log("file name?", newFile.name);
-    console.log("ENDPOINT:", process.env.REACT_APP_API_ENDPOINT);
+    formData.append("title", newFile.name);
+    console.log("[onSubmit] ENDPOINT:", process.env.REACT_APP_API_ENDPOINT);
+    console.log("[onSubmit] newFile: ", newFile);
+    console.log("[onSubmit] formData: ", formData);
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "image/*",
+        Authorization: `Client-ID ${process.env.REACT_APP_API_CLIENT_ID}`
+      }
+    };
+
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}`,
         formData,
-        {
-          headers: {
-            Accept: "image/*",
-            Authorization: `Client-ID ${process.env.REACT_APP_API_CLIENT_ID}`
-          }
-        }
+        config
       );
 
-      const { name: filename, link: filePath } = res.data.data;
-      setUploadedFile({ filename, filePath });
+      const { name, link } = res.data.data;
+      setFilename(name);
+      setImagePreviewUrl(link);
+      updateProfileImage();
       // setMessage({ msg: "File Uploaded", variant: "success" });
     } catch (err) {
       if (err.response) {
@@ -66,35 +86,40 @@ const FileUpload = () => {
     }
   };
 
-  const triggerInputFile = () => fileInput.current.click();
-
   return (
     <div className="container">
-      <div className="row mt-5">
+      <div className="row mt-5 mb-5">
         <div className="file-input-wrap col-sm-8 col-md-6 m-auto">
           {message.msg ? (
             <Message msg={message.msg} variant={message.variant} />
           ) : null}
 
-          <ImagePreview
-            src={uploadedFile.filePath}
-            alt={uploadedFile.filename}
-          />
+          <ImagePreview src={imagePreviewUrl} alt={""} />
 
           <Form>
             <input
               style={{ display: "none" }}
               type="file"
-              onChange={e => onChange(e)}
+              onChange={e => fileChangedHandler(e)}
               ref={fileInput}
               accept="image/*"
             />
 
             <div className="btns mt-2">
-              {uploadedFile.filename ? (
-                <Button onClick={updateProfileImage}>
-                  Make this my profile picture
-                </Button>
+              {imagePreviewUrl ? (
+                userStep === 3 ? (
+                  <Button
+                    onClick={() => {
+                      triggerInputFile();
+                    }}
+                  >
+                    Replace photo
+                  </Button>
+                ) : (
+                  <Button onClick={onSubmit}>
+                    Make this my profile picture
+                  </Button>
+                )
               ) : (
                 <Button
                   onClick={() => {

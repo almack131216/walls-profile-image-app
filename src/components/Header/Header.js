@@ -1,9 +1,9 @@
 import React from "react";
 import { Navbar } from "react-bootstrap";
 import logo from "../../assets/logo.svg";
-import ProfileImage from "./ProfileImage";
+import ImagePreview from "../FileUpload/ImagePreview";
 
-const Header = () => {
+const Header = props => {
   return (
     <Navbar className="justify-content-between">
       <Navbar.Brand href="/">
@@ -12,7 +12,9 @@ const Header = () => {
           Walls<span>.io</span>
         </span>
       </Navbar.Brand>
-      <ProfileImage />
+      <div className="profile-img-wrap">
+        <ImagePreview src={props.imgSrc} />
+      </div>
     </Navbar>
   );
 };

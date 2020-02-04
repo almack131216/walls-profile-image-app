@@ -30,7 +30,11 @@ code {
 }
 
 .profile-img-wrap > .img-peview-wrap {
-  padding-bottom: 100%; /* 4:3 */
+}
+
+.profile-img-wrap > .img-peview-wrap img {
+  /* min-width: 100%;
+  max-width: 100%; */
 }
 
 .logo {
@@ -42,24 +46,16 @@ code {
 .img-peview-wrap {
   background: #e6e6e6;
   width: 100%;
-  padding-bottom: 75%; /* 4:3 */
-  position: relative;
-  overflow: hidden;
 }
 
 .img-peview-wrap > div {
   display: block;
-  position: absolute;
   text-align: center;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
 .img-peview-wrap > div > img {
-  width: auto;
-  height: 100%;
+  width: 100%;
+  height: auto;
 }
 
 .file-input-wrap {
