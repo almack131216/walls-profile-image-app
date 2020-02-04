@@ -4,20 +4,27 @@ import axios from "axios";
 import Message from "../Message/Message";
 import ImagePreview from "../ImagePreview/ImagePreview";
 import "./FileUpload.css";
+import { ConsoleLog } from "../../assets/Helpers";
 
 const FileUpload = props => {
   const [userStep, setUserStep] = useState(0);
   const fileInput = useRef(null);
   const [selectedFile, setSelectedFile] = useState();
   const [imagePreviewUrl, setImagePreviewUrl] = useState();
-  const [filename, setFilename] = useState("Choose file");
   const [message, setMessage] = useState({});
 
-  const triggerInputFile = () => fileInput.current.click();
+  const triggerInputFile = () => {
+    ConsoleLog(
+      "[FileUpload] triggerInputFile() > pseudo button triggers file input"
+    );
+    fileInput.current.click();
+  };
 
   const fileChangedHandler = e => {
+    ConsoleLog(
+      "[FileUpload] fileChangedHandler() > generate image before upload"
+    );
     setUserStep(1);
-    setFilename(e.target.files[0].name);
     setSelectedFile(e.target.files[0]);
 
     let reader = new FileReader();
@@ -31,25 +38,29 @@ const FileUpload = props => {
 
   const updateProfileImage = () => {
     setUserStep(3);
-    console.log("[FileUpload] updateProfileImage()...");
-    // console.log("[FileUpload] updateProfileImage() > SAVE to localStorage: ", imagePreviewUrl);
+    ConsoleLog(
+      "[FileUpload] updateProfileImage() > SAVE to localStorage: ",
+      imagePreviewUrl
+    );
     localStorage.setItem("imgSrc", imagePreviewUrl);
     props.setImgSrc();
   };
 
   const onSubmit = async e => {
     e.preventDefault();
+    ConsoleLog("[FileUpload] onSubmit() ...");
     setUserStep(2);
 
-    const newFile = selectedFile;
-
     let formData = new FormData();
-    formData.append("image", newFile);
-    formData.append("name", newFile.name);
-    formData.append("title", newFile.name);
-    console.log("[onSubmit] ENDPOINT:", process.env.REACT_APP_API_ENDPOINT);
-    console.log("[onSubmit] newFile: ", newFile);
-    console.log("[onSubmit] formData: ", formData);
+    formData.append("image", selectedFile);
+    formData.append("name", selectedFile.name);
+    formData.append("title", selectedFile.name);
+    ConsoleLog(
+      "[FileUpload] onSubmit() > ENDPOINT:",
+      process.env.REACT_APP_API_ENDPOINT
+    );
+    ConsoleLog("[FileUpload] onSubmit() > selectedFile: ", selectedFile);
+    ConsoleLog("[FileUpload] onSubmit() > formData: ", formData);
 
     const config = {
       headers: {
@@ -66,8 +77,7 @@ const FileUpload = props => {
         config
       );
 
-      const { name, link } = res.data.data;
-      setFilename(name);
+      const { link } = res.data.data;
       setImagePreviewUrl(link);
       updateProfileImage();
       // setMessage({ msg: "File Uploaded", variant: "success" });

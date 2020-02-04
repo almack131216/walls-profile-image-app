@@ -4,7 +4,6 @@ import ImageNotFound from "../../assets/image-placeholder.jpg";
 import "./ImagePreview.css";
 
 const ImagePreview = props => {
-  //   console.log("[ImagePreview] ...");
   const imgUrl = props.src ? props.src : "";
   const imgAlt = props.alt ? props.alt : "";
 
