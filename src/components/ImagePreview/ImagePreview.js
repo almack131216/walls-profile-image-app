@@ -1,6 +1,7 @@
 import React from "react";
 import Img from "react-image";
 import ImageNotFound from "../../assets/image-placeholder.jpg";
+import "./ImagePreview.css";
 
 const ImagePreview = props => {
   //   console.log("[ImagePreview] ...");

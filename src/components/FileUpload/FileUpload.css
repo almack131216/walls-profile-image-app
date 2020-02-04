@@ -1,0 +1,18 @@
+/* FileUpload.css */
+
+@media (min-width: 480px) and (max-width: 575px) {
+  .file-input-wrap {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 479px) {
+  .file-input-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.btns > button {
+  width: 100%;
+}

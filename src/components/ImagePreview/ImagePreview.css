@@ -1,0 +1,16 @@
+/* ImagePreview.css */
+
+.img-peview-wrap {
+  background: #e6e6e6;
+  width: 100%;
+}
+
+.img-peview-wrap > div {
+  display: block;
+  text-align: center;
+}
+
+.img-peview-wrap > div > img {
+  width: 100%;
+  height: auto;
+}

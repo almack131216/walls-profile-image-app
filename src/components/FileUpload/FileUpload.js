@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import Message from "../Message/Message";
-import ImagePreview from "./ImagePreview";
+import ImagePreview from "../ImagePreview/ImagePreview";
+import "./FileUpload.css";
 
 const FileUpload = props => {
   const [userStep, setUserStep] = useState(0);

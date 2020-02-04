@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Header from "./components/Header/Header";
 import FileUpload from "./components/FileUpload/FileUpload";
-import "./tmp.css";
+import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {

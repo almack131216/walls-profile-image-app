@@ -1,7 +1,8 @@
 import React from "react";
 import { Navbar } from "react-bootstrap";
 import logo from "../../assets/logo.svg";
-import ImagePreview from "../FileUpload/ImagePreview";
+import ImagePreview from "../ImagePreview/ImagePreview";
+import "./Header.css";
 
 const Header = props => {
   return (
